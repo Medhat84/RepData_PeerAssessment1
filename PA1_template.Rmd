@@ -2,7 +2,9 @@
 title: "C5W2 Project"
 author: "Medhat Farag"
 date: "August 19, 2017"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
