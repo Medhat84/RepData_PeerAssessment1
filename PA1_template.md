@@ -28,7 +28,7 @@ library(ggplot2); library(dplyr)
 qplot(unique(db$date), sum_steps, col = "red", ylab = "Steps", xlab = "Day", main = "Total steps per day", geom = "step") + theme_bw() + theme(legend.position = "none")
 ```
 
-![](PA1_template_files/figure-html/Daily steps histogram-1.png)<!-- -->
+![](PA1_template_files/figure-html/_Daily_steps_histogram-1.png)<!-- -->
 
 - Third requirement is to Calculate the mean and median of the total number of steps taken per day
 

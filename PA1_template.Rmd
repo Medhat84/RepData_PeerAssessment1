@@ -26,7 +26,7 @@ db <- read.csv("activity.csv")
 
 - The second requirment is to do a histogram of the total number of steps taken each day.
 
-```{r Daily steps histogram, warning = FALSE, message = FALSE}
+```{r_Daily_steps_histogram, warning = FALSE, message = FALSE}
 db$date <- as.Date(db$date)
 sum_steps <- tapply(db$steps, db$date, sum, na.rm = TRUE)
 library(ggplot2); library(dplyr)
