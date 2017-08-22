@@ -1,5 +1,5 @@
-# C5W2 Project
-Medhat Farag  
+# Reproducible Research Course, second week Project
+Medhat  
 August 19, 2017  
 
 
@@ -10,46 +10,49 @@ This is an R Markdown document. It is written as an assignment for reproducible 
 
 This assignment makes use of data from a personal activity monitoring device. This device collects data at 5 minute intervals through out the day. The data consists of two months of data from an anonymous individual collected during the months of October and November, 2012 and include the number of steps taken in 5 minute intervals each day.
 
-- The start will be reading the data set as it is the first requirement of the assignment
+The requirements of the assignment will be addressed in the following headings.
+
+### Reading the dataset and processing the data
+
+- Set the working directory, download the dataset, unzip file & get the data into working space in "db"" variable
 
 
 ```r
 setwd("~/R Directory/C5W2")
-db <- read.csv("activity.csv")
+fileurl <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+if(!file.exists("activity.zip"))download.file(fileurl, "activity.zip")
+if(!file.exists("activity.csv"))unzip("activity.zip")
+if(!exists("db"))db <- read.csv("activity.csv")
 ```
 
-- The second requirment is to do a histogram of the total number of steps taken each day.
+### Histogram of the total number of steps taken each day
+
+- Change the format of "date"" variable. Calculate total steps taken per day then plot results. It's important to not include spaces in the name of code chunks containing figures as this leads to figures not appearing in the resulting markdown file
 
 
 ```r
 db$date <- as.Date(db$date)
 sum_steps <- tapply(db$steps, db$date, sum, na.rm = TRUE)
-library(ggplot2); library(dplyr)
-qplot(unique(db$date), sum_steps, col = "red", ylab = "Steps", xlab = "Day", main = "Total steps per day", geom = "step") + theme_bw() + theme(legend.position = "none")
+qplot(unique(db$date), weight = sum_steps, bins = length(unique(db$date)), col = "red", ylab = "Steps", xlab = "Day", main = "Total steps per day") + theme_bw() + theme(legend.position = "none")
 ```
 
-![](PA1_template_files/figure-html/_Daily_steps_histogram-1.png)<!-- -->
+![](PA1_template_files/figure-html/Daily_steps_histogram-1.png)<!-- -->
 
-- Third requirement is to Calculate the mean and median of the total number of steps taken per day
+### Mean and median number of steps taken each day
+
+- Calculate the mean and median of the total number of steps taken per day
 
 
 ```r
-mean(sum_steps)
+temp1 <- round(mean(sum_steps), 2)
+temp2 <- median(sum_steps)
 ```
 
-```
-## [1] 9354.23
-```
+Daily steps mean is **9354.23** and median is **10395**
 
-```r
-median(sum_steps)
-```
+### Time series plot of the average number of steps taken
 
-```
-## [1] 10395
-```
-
-- Fourth requirement is to plot a time series of the average number of steps taken per each 5-minute period
+- Calculate average steps per interval & plot results
 
 
 ```r
@@ -57,67 +60,55 @@ av_steps <- tapply(db$steps, db$interval, mean, na.rm = TRUE)
 qplot(unique(db$interval), av_steps, col = "red", ylab = "Steps", xlab = "Interval", main = "Average steps per interval", geom = "line") + theme_bw() + theme(legend.position = "none")
 ```
 
-![](PA1_template_files/figure-html/Time series plot-1.png)<!-- -->
+![](PA1_template_files/figure-html/Time_series_plot-1.png)<!-- -->
 
-- Fifth requirement is to find the 5-minute interval that, on average, contains the maximum number of steps
+### The 5-minute interval that, on average, contains the maximum number of steps
 
-
-```r
-unique(db$interval)[which.max(av_steps)]
-```
-
-```
-## [1] 835
-```
-
-- The total number of missing observations is calculated, then these missing values are substituted by average of same interval across all other days rounding to nearest integer to eliminate fractions in number of steps. This is the sixth requirement.
+- Calculate interval with maximum average steps
 
 
 ```r
-sum(is.na(db$steps))
+temp3 <- unique(db$interval)[which.max(av_steps)]
 ```
 
-```
-## [1] 2304
-```
+Interval with maximum average steps is **835**
+
+### Code to describe and show a strategy for imputing missing data
+
+- The total number of missing observations is calculated, then these missing values are substituted by average of same interval across all other days rounding to nearest integer to eliminate fractions in number of steps
+
 
 ```r
+temp4 <- sum(is.na(db$steps))
 db <- db %>% group_by(interval) %>% mutate(int_av = mean(steps, na.rm = TRUE))
 db$steps[is.na(db$steps)] <- round(db$int_av[is.na(db$steps)])
-sum(is.na(db$steps))
+temp5 <- sum(is.na(db$steps))
 ```
 
-```
-## [1] 0
-```
+The total number of missing values before imputing was **2304**. This number is perfectly reduced to **0** after imputing
 
-- The seventh requirment is to replot the histogram of the total number of steps taken each day & recalculate the mean and median.
+### Histogram of the total number of steps taken each day after missing values are imputed
+
+- Replot the histogram of the total number of steps taken each day & recalculate the mean and median.
 
 
 ```r
 sum_steps <- tapply(db$steps, db$date, sum, na.rm = TRUE)
-qplot(unique(db$date), sum_steps, col = "red", ylab = "Steps", xlab = "Day", main = "Total steps per day", geom = "step") + theme_bw() + theme(legend.position = "none")
+qplot(unique(db$date), weight = sum_steps, bins = length(unique(db$date)), col = "red", ylab = "Steps", xlab = "Day", main = "Total steps per day") + theme_bw() + theme(legend.position = "none")
 ```
 
-![](PA1_template_files/figure-html/Repeat daily steps histogram-1.png)<!-- -->
-
-```r
-mean(sum_steps)
-```
-
-```
-## [1] 10765.64
-```
+![](PA1_template_files/figure-html/Repeat_daily_steps_histogram-1.png)<!-- -->
 
 ```r
-median(sum_steps)
+temp1 <- round(mean(sum_steps), 2)
+temp2 <- median(sum_steps)
 ```
 
-```
-## [1] 10762
-```
+Daily steps mean after imputing is **10765.64** and median is **10762**. That means that imputing the missing data caused the values of mean & median to be almost equal.
 
-- The eighth requirement is to do a panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
+### Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
+
+- Categorize days into weekdays & weekends, then calculate the average of each category & plot results  
 
 
 ```r
@@ -127,4 +118,4 @@ db <- db %>% group_by(dayclass, interval) %>% mutate(int_av = mean(steps, na.rm 
 qplot(data = db, x = interval, y = int_av, facets = dayclass ~ ., geom = "line", xlab = "Interval", ylab = "Steps", main = "Average steps per interval", col = "red") + theme_bw() + theme(legend.position = "none")
 ```
 
-![](PA1_template_files/figure-html/Weekday & weekend average-1.png)<!-- -->
+![](PA1_template_files/figure-html/Weekday_weekend_average-1.png)<!-- -->
