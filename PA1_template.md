@@ -104,7 +104,7 @@ temp1 <- round(mean(sum_steps), 2)
 temp2 <- median(sum_steps)
 ```
 
-Daily steps mean after imputing is **10765.64** and median is **10762**. That means that imputing the missing data caused the values of mean & median to be almost equal.
+Daily steps mean after imputing is **10765.64** and median is **10762**. That means that imputing the missing data didn't have significant effect on mean & median values.
 
 ### Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
 
