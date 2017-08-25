@@ -21,7 +21,7 @@ The requirements of the assignment will be addressed in the following headings.
 setwd("~/R Directory/C5W2")
 fileurl <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
 if(!file.exists("activity.zip"))download.file(fileurl, "activity.zip")
-if(!file.exists("activity.csv"))unzip("activity.zip")
+if(!file.exists("activity.csv"))read.csv("activity.zip")
 if(!exists("db"))db <- read.csv("activity.csv")
 ```
 
@@ -32,7 +32,7 @@ if(!exists("db"))db <- read.csv("activity.csv")
 
 ```r
 db$date <- as.Date(db$date)
-sum_steps <- tapply(db$steps, db$date, sum, na.rm = TRUE)
+sum_steps <- tapply(db$steps, db$date, sum)
 qplot(unique(db$date), weight = sum_steps, bins = length(unique(db$date)), col = "red", ylab = "Steps", xlab = "Day", main = "Total steps per day") + theme_bw() + theme(legend.position = "none")
 ```
 
@@ -44,11 +44,11 @@ qplot(unique(db$date), weight = sum_steps, bins = length(unique(db$date)), col =
 
 
 ```r
-temp1 <- round(mean(sum_steps), 2)
-temp2 <- median(sum_steps)
+temp1 <- round(mean(sum_steps, na.rm = TRUE), 2)
+temp2 <- median(sum_steps, na.rm = TRUE)
 ```
 
-Daily steps mean is **9354.23** and median is **10395**
+Daily steps mean is **10766.19** and median is **10765**
 
 ### Time series plot of the average number of steps taken
 
